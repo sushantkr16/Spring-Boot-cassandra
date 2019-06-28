@@ -20,8 +20,7 @@ public class InvitationRepositoryImpl implements InvitationRepository {
 
     @Override
     public Invitation createInvitation(Invitation invitation) {
-        Invitation updatedInvitation = cassandraOperations.insert(invitation);
-        return updatedInvitation;
+       return cassandraOperations.insert(invitation);
     }
 
     @Override
@@ -38,5 +37,12 @@ public class InvitationRepositoryImpl implements InvitationRepository {
         } else {
             return null;
         }
+    }
+
+    @Override
+    public List<Invitation> getAllInvitation() {
+        Select selectQuery = QueryBuilder.select().all().from("invitation", "invitation");
+        List<Invitation> invitationList = cassandraOperations.select(selectQuery, Invitation.class);
+        return invitationList;
     }
 }

@@ -7,6 +7,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 import static org.springframework.http.HttpStatus.*;
 
 /**
@@ -32,13 +34,25 @@ public class InvitationResource {
         }
     }
 
-    @GetMapping
-    public ResponseEntity getBirthdayInvitation(@RequestParam String invitationId) {
+    @GetMapping("/{invitationId}")
+    public ResponseEntity getBirthdayInvitation(@PathVariable String invitationId) {
 
         InvitationResponse invitationResponse = invitationService.getInvitation(invitationId);
 
         if (null != invitationResponse) {
             return new ResponseEntity(invitationResponse, OK);
+        } else {
+            return new ResponseEntity("No invitation exists", BAD_REQUEST);
+        }
+    }
+
+    @GetMapping("all")
+    public ResponseEntity getAllBirthdayInvitation() {
+
+        List<InvitationResponse> invitationResponseList = invitationService.getAllInvitations();
+
+        if (null != invitationResponseList) {
+            return new ResponseEntity(invitationResponseList, OK);
         } else {
             return new ResponseEntity("No invitation exists", BAD_REQUEST);
         }

@@ -1,17 +1,19 @@
 server:
-  port:
-      8087
+  port: 8087
 
 spring:
   application:
         name:
-            spring-data-cassandra
+            spring-boot-cassandra
   data:
     cassandra: # Cassandra properties
       contact-points: localhost
       port          : 9042
-      keyspace-name : springcassandra
+      keyspace-name : invitation
       username      : cassandra
       password      : cassandra
       ssl           : false
-
+  cloud:
+    service-registry:
+      auto-registration:
+        enabled: false

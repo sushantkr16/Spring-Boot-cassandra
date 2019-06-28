@@ -1,5 +1,6 @@
 package com.sk.learn.invitation.config;
 
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.cassandra.config.PoolingOptionsFactoryBean;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
@@ -24,6 +25,16 @@ import org.springframework.data.cassandra.mapping.SimpleUserTypeResolver;
 @ComponentScan(basePackages = "com.sk.learn")
 public class CassandraConfig {
 
+    @Value("${spring.data.contact-points:localhost}")
+    private String contactPoints;
+
+    @Value("${spring.data.port:9042}")
+    private int port;
+
+    @Value("${spring.data.keyspace-name:invitation}")
+    private String keySpaceName;
+
+
     /**
      * Create cluster bean.
      * @return cluster.
@@ -32,8 +43,8 @@ public class CassandraConfig {
     @Bean
     public CassandraClusterFactoryBean cluster() throws Exception {
         CassandraClusterFactoryBean cluster = new CassandraClusterFactoryBean();
-        cluster.setContactPoints("localhost");
-        cluster.setPort(9042);
+        cluster.setContactPoints(contactPoints);
+        cluster.setPort(port);
         cluster.setPoolingOptions(poolingOptions().getObject());
         return cluster;
     }
@@ -62,7 +73,7 @@ public class CassandraConfig {
     public CassandraMappingContext mappingContext() throws Exception {
         BasicCassandraMappingContext mappingContext = new BasicCassandraMappingContext();
         mappingContext.setUserTypeResolver(new SimpleUserTypeResolver(
-                cluster().getObject(), "springcassandra"));
+                cluster().getObject(), keySpaceName));
         return mappingContext;
     }
 
@@ -85,7 +96,7 @@ public class CassandraConfig {
     public CassandraSessionFactoryBean session() throws Exception {
         CassandraSessionFactoryBean session = new CassandraSessionFactoryBean();
         session.setCluster(cluster().getObject());
-        session.setKeyspaceName("springcassandra");
+        session.setKeyspaceName(keySpaceName);
         session.setConverter(converter());
         session.setSchemaAction(SchemaAction.RECREATE);
         return session;

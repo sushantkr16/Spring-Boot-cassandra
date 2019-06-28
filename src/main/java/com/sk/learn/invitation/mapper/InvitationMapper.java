@@ -1,36 +1,41 @@
 package com.sk.learn.invitation.mapper;
 
+
 import com.sk.learn.invitation.domain.Invitation;
 import com.sk.learn.invitation.domain.InvitationRequest;
 import com.sk.learn.invitation.domain.InvitationResponse;
+import org.springframework.util.CollectionUtils;
 
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
+import java.util.List;
 
 public class InvitationMapper {
 
     public static Invitation toDomainFromRequest(InvitationRequest invitationRequest) {
-        SimpleDateFormat formatter = new SimpleDateFormat("dd-MMM-yyyy");
         if (null != invitationRequest) {
-            try {
-              Invitation invitation = new Invitation();
-              invitation.setDate(formatter.parse(invitationRequest.getInvitationDate()));
-              invitation.setMessage(invitationRequest.getInvitationMessage());
-              return invitation;
-
-            } catch (ParseException e) {
-                e.printStackTrace();
-            }
+          Invitation invitation = new Invitation();
+          invitation.setInvitationType(invitationRequest.getInvitationType());
+          invitation.setInvitationDate(LocalDate.parse(invitationRequest.getInvitationDate()));
+          invitation.setInvitationMessage(invitationRequest.getInvitationMessage());
+          invitation.setInvitationTo(invitationRequest.getInvitationTo());
+          invitation.setVenueAddress(invitationRequest.getVenueAddress());
+          return invitation;
         }
         return null;
     }
 
     public static InvitationResponse toResponseFromDomain(Invitation invitation) {
-        SimpleDateFormat formatter = new SimpleDateFormat("dd-MMM-yyyy");
         if (null != invitation) {
             InvitationResponse invitationResponse = new InvitationResponse();
-            invitationResponse.setMessage(invitation.getMessage());
-            invitationResponse.setDate(formatter.format(invitation.getDate()));
+            invitationResponse.setInvitationId(invitation.getInvitationId());
+            invitationResponse.setInvitationType(invitation.getInvitationType());
+            invitationResponse.setInvitationDate(
+                    invitation.getInvitationDate().format(DateTimeFormatter.ofPattern("dd/MM/yyyy")));
+            invitationResponse.setInvitationMessage(invitation.getInvitationMessage());
+            invitationResponse.setInvitationTo(invitation.getInvitationTo());
+            invitationResponse.setVenueAddress(invitation.getVenueAddress());
             return invitationResponse;
         }
 
@@ -38,5 +43,22 @@ public class InvitationMapper {
 
     }
 
-
+    public static List<InvitationResponse> toResponseListFromDomain(List<Invitation> invitationList) {
+        List<InvitationResponse> invitationResponseList = null;
+        if (!CollectionUtils.isEmpty(invitationList)) {
+            invitationResponseList = new ArrayList<>();
+            for (Invitation invitation: invitationList) {
+                InvitationResponse invitationResponse = new InvitationResponse();
+                invitationResponse.setInvitationId(invitation.getInvitationId());
+                invitationResponse.setInvitationType(invitation.getInvitationType());
+                invitationResponse.setInvitationDate(
+                        invitation.getInvitationDate().format(DateTimeFormatter.ofPattern("dd/MM/yyyy")));
+                invitationResponse.setInvitationMessage(invitation.getInvitationMessage());
+                invitationResponse.setInvitationTo(invitation.getInvitationTo());
+                invitationResponse.setVenueAddress(invitation.getVenueAddress());
+                invitationResponseList.add(invitationResponse);
+            }
+        }
+        return invitationResponseList;
+    }
 }

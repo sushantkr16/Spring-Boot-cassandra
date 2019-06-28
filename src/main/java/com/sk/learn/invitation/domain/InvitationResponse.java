@@ -1,25 +1,19 @@
 package com.sk.learn.invitation.domain;
 
-//@Data
-//lombok is not working. will integrate it later
+import lombok.Data;
+
+import java.time.LocalDate;
+import java.util.Date;
+import java.util.UUID;
+
+@Data
 public class InvitationResponse {
 
-    private String message;
-    private String date;
+    private UUID invitationId;
+    private String invitationType;
+    private String invitationDate;
+    private String invitationMessage;
+    private String invitationTo;
+    private String venueAddress;
 
-    public String getMessage() {
-        return message;
-    }
-
-    public void setMessage(String message) {
-        this.message = message;
-    }
-
-    public String getDate() {
-        return date;
-    }
-
-    public void setDate(String date) {
-        this.date = date;
-    }
 }

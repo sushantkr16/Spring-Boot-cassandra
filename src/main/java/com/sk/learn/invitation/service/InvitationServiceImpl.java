@@ -8,6 +8,9 @@ import com.sk.learn.invitation.repository.InvitationRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+import java.util.UUID;
+
 /**
  * Created by sk on 28/10/18.
  */
@@ -22,6 +25,7 @@ public class InvitationServiceImpl implements InvitationService {
 
         // map request to domain
         Invitation invitationDomain = InvitationMapper.toDomainFromRequest(invitationRequest);
+        invitationDomain.setInvitationId(UUID.randomUUID());
 
         Invitation updatedInvitationRequest = invitationRepository.createInvitation(invitationDomain);
 
@@ -37,6 +41,15 @@ public class InvitationServiceImpl implements InvitationService {
         // map domain to response
         InvitationResponse invitationResponse = InvitationMapper.toResponseFromDomain(requestedInvitation);
         return invitationResponse;
+    }
+
+    @Override
+    public List<InvitationResponse> getAllInvitations() {
+        List<Invitation> requestedInvitationList = invitationRepository.getAllInvitation();
+
+        // map domain to response
+        List<InvitationResponse> invitationResponseList = InvitationMapper.toResponseListFromDomain(requestedInvitationList);
+        return invitationResponseList;
     }
 
 }
